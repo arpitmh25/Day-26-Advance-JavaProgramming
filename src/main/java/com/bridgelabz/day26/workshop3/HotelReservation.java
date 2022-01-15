@@ -71,7 +71,7 @@ public class HotelReservation implements HotelReservationInterface {
 
         if (cheapestPrice != Double.MAX_VALUE) {
 
-            System.out.println("Cheapest Hotel : \n" + cheapestHotel.get(0).getHotelName() + ", Total Rates: " + cheapestPrice);
+            System.out.println("Cheapest Hotel : \n" + cheapestHotel.get(0).getHotelName() + ", Total Rate: " + cheapestPrice);
             return cheapestHotel.get(0).getHotelName();
         }
         return null;
