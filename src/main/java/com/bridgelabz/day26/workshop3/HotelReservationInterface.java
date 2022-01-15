@@ -12,13 +12,21 @@ public interface HotelReservationInterface {
 
     public void printHotelList();
 
+    public String getDates();
+
+    public boolean validateDate(String date);
+
     public ArrayList<Hotel> getHotelList();
 
-    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate);
+    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate, String s, double cheapestPrice);
 
-    public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate);
+    public Hotel getCheapestBestRatedHotel(String reward, LocalDate startDate, LocalDate endDate);
 
     public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate);
 
     public ArrayList<Integer> getDurationOfStayDetails(LocalDate startDate, LocalDate endDate);
+
+    ArrayList<Hotel> getCheapestHotel(String reward, LocalDate startDate, LocalDate endDate);
+
+    Hotel getBestRatedHotel(String reward, LocalDate startDate, LocalDate endDate);
 }

@@ -4,27 +4,35 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
 
 public class HotelReservation implements HotelReservationInterface {
 
+    public static Scanner scannerObject = new Scanner(System.in);
+    public ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
+    public Hotel hotel;
+    public static double cheapestPrice;
 
-    ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
-    Hotel hotel;
+    public void addHotel(String hotelName, int rating, double weekdayRegularCustomerCost,
+                         double weekendRegularCustomerCost, double weekdayRewardCustomerCost, double weekendRewardCustomerCost) {
 
-    public void addHotel(String hotelName, int rating, double weekdayRate, double weekendRate) {
         hotel = new Hotel();
         hotel.setHotelName(hotelName);
         hotel.setRating(rating);
-        hotel.setWeekDayRate(weekdayRate);
-        hotel.setWeekendRate(weekendRate);
+        hotel.setWeekDayRate(weekdayRegularCustomerCost);
+        hotel.setWeekendRate(weekendRegularCustomerCost);
+        hotel.setWeekdayRewardCustomerRate(weekdayRewardCustomerCost);
+        hotel.setWeekendRewardCustomerRate(weekendRewardCustomerCost);
         hotelList.add(hotel);
+        System.out.println("Successfully ADDED !!");
     }
 
+    @Override
+    public void addHotel(String hotelName, int rating, double weekdayRegularCustomerCost, double weekendRegularCustomerCost, int i, int i1) {
+        return;
+    }
 
     @Override
     public void addHotel(String hotelName, int rating, double weekdayRegularCustomerCost, double weekendRegularCustomerCost, int i, int i1) {
@@ -33,11 +41,12 @@ public class HotelReservation implements HotelReservationInterface {
 
     @Override
     public void addHotel(String lakewood, int i, int i1, int i2) {
-        System.out.println();
+        return;
     }
 
     public int getHotelListSize() {
         return hotelList.size();
+
     }
 
     public void printHotelList() {
@@ -49,9 +58,16 @@ public class HotelReservation implements HotelReservationInterface {
     }
 
     @Override
-    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate) {
+    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate, String s, double cheapestPrice) {
         return null;
     }
+
+    public String getDates() {
+        System.out.println("Enter the Date in YYYY-MM-DD: ");
+        String date = scannerObject.next();
+        boolean isValid = validateDate(date);
+        if (isValid)
+            return date;
 
     public ArrayList<Hotel> getCheapestHotel(String customerType, LocalDate startDate, LocalDate endDate) {
         return null;
@@ -61,14 +77,19 @@ public class HotelReservation implements HotelReservationInterface {
         return null;
     }
 
-    @Override
-    public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate) {
-        return null;
-    }
+    public boolean validateDate(String date) {
 
-    @Override
-    public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate) {
-        return null;
+        try {
+            if (date.length() == 0)
+                throw new HotelReservationException(HotelReservationException.ExceptionType.ENTERED_NOTHING, "Date Is EMPTY");
+
+            String dateRegEx = "^([0-9]{4})[-](([0][1-9])|([1][0-2]))[-]([0-2][0-9]|(3)[0-1])$";
+            return date.matches(dateRegEx);
+        } catch (NullPointerException e) {
+            throw new HotelReservationException(HotelReservationException.ExceptionType.ENTERED_NULL, "Date is NULL");
+        }
+
+
     }
 
     public ArrayList<Integer> getDurationOfStayDetails(LocalDate startDate, LocalDate endDate) {
@@ -76,6 +97,7 @@ public class HotelReservation implements HotelReservationInterface {
         ArrayList<Integer> durationDetails = new ArrayList<Integer>();
         int numberOfDays = (int) ChronoUnit.DAYS.between(startDate, endDate) + 1;
         int weekends = 0;
+
         while (startDate.compareTo(endDate) != 0) {
             switch (DayOfWeek.of(startDate.get(ChronoField.DAY_OF_WEEK))) {
                 case SATURDAY:
@@ -97,7 +119,7 @@ public class HotelReservation implements HotelReservationInterface {
 
     }
 
-    public ArrayList<Hotel> getCheapestHotel(String customerType, LocalDate startDate, LocalDate endDate, double cheapestPrice) {
+    public ArrayList<Hotel> getCheapestHotel(String customerType, LocalDate startDate, LocalDate endDate) {
 
         ArrayList<Integer> durationDetails = getDurationOfStayDetails(startDate, endDate);
         int weekdaysNumber = durationDetails.get(0);
@@ -111,6 +133,10 @@ public class HotelReservation implements HotelReservationInterface {
                             + hotel.getWeekDayRate() * weekdaysNumber))
                     .min().orElse(Double.MAX_VALUE);
 
+            cheapestHotel = hotelList.stream()
+                    .filter(hotel -> (hotel.getWeekendRate() * weekendsNumber
+                            + hotel.getWeekDayRate() * weekdaysNumber) == cheapestPrice)
+
             double finalCheapestPrice = cheapestPrice;
             cheapestHotel = hotelList.stream()
                     .filter(hotel -> (hotel.getWeekendRate() * weekendsNumber
@@ -123,10 +149,16 @@ public class HotelReservation implements HotelReservationInterface {
                             + hotel.getWeekdayRewardCustomerRate() * weekdaysNumber))
                     .min().orElse(Double.MAX_VALUE);
 
+
+            cheapestHotel = hotelList.stream()
+                    .filter(hotel -> (hotel.getWeekendRewardCustomerRate() * weekendsNumber
+                            + hotel.getWeekdayRewardCustomerRate() * weekdaysNumber) == cheapestPrice)
+
             double finalCheapestPrice1 = cheapestPrice;
             cheapestHotel = hotelList.stream()
                     .filter(hotel -> (hotel.getWeekendRewardCustomerRate() * weekendsNumber
                             + hotel.getWeekdayRewardCustomerRate() * weekdaysNumber) == finalCheapestPrice1)
+
                     .collect(Collectors.toCollection(ArrayList::new));
         }
 
@@ -143,12 +175,16 @@ public class HotelReservation implements HotelReservationInterface {
 
     }
 
+
+    public Hotel getCheapestBestRatedHotel(String customerType, LocalDate startDate, LocalDate endDate) {
+
     public Hotel getCheapestBestRatedHotel(String customerType, LocalDate startDate, LocalDate endDate, HotelReservationException.ExceptionType ENTERED_EMPTY, String cheapestPrice, HotelReservationException.ExceptionType ENTERED_NULL) {
+
 
         try {
 
             if (customerType.length() == 0)
-                throw new HotelReservationException(ENTERED_EMPTY, "EMPTY Value Entered");
+                throw new HotelReservationException(HotelReservationException.ExceptionType.ENTERED_NOTHING, "EMPTY Value Entered");
 
             ArrayList<Hotel> cheapestHotels = getCheapestHotel(customerType, startDate, endDate);
             Optional<Hotel> sortedHotelList = cheapestHotels.stream()
@@ -158,16 +194,25 @@ public class HotelReservation implements HotelReservationInterface {
                     + cheapestPrice);
             return sortedHotelList.get();
         } catch (NullPointerException e) {
-            throw new HotelReservationException(ENTERED_NULL, "NULL Value Entered");
+            throw new HotelReservationException(HotelReservationException.ExceptionType.ENTERED_NULL, "NULL Value Entered");
         }
     }
 
+
+    @Override
+    public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate) {
+        return null;
+    }
+
+    public Hotel getBestRatedHotel(String customerType, LocalDate startDate, LocalDate endDate) {
+
     public Hotel getBestRatedHotel(String customerType, LocalDate startDate, LocalDate endDate, HotelReservationException.ExceptionType ENTERED_NULL, HotelReservationException.ExceptionType ENTERED_EMPTY) {
+
 
         try {
 
             if (customerType.length() == 0)
-                throw new HotelReservationException(ENTERED_EMPTY, "EMPTY Value Entered");
+                throw new HotelReservationException(HotelReservationException.ExceptionType.ENTERED_NOTHING, "EMPTY Value Entered");
 
             ArrayList<Integer> durationDetails = getDurationOfStayDetails(startDate, endDate);
             int weekdaysNumber = durationDetails.get(0);
@@ -197,4 +242,3 @@ public class HotelReservation implements HotelReservationInterface {
 
     }
 
-}
