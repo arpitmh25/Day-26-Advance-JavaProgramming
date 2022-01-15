@@ -20,7 +20,7 @@ public class HotelReservation implements HotelReservationInterface {
 
 
     @Override
-    public void addHotel() {
+    public void addHotel(String lakewood, int i, int i1, int i2) {
         System.out.println();
     }
 
