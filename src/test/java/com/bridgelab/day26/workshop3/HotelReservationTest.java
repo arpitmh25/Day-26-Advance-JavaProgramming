@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class HotelReservationTest {
     @Test
-    public void givenHotelDetails_WhenSizeMatches_ShouldReturnTrue(Assertions Assert) {
+    public void givenHotelDetails_WhenSizeMatch_ShouldReturnTrue(Assertions Assert) {
         HotelReservationInterface hotelReservation = (HotelReservationInterface) new HotelReservation();
         hotelReservation.addHotel();
         int hotelListSize = hotelReservation.getHotelListSize();
