@@ -17,4 +17,6 @@ public interface HotelReservationInterface {
     public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate);
 
     public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate);
+
+    public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate);
 }
