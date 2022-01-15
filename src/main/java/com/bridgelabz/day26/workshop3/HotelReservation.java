@@ -1,32 +1,28 @@
 package com.bridgelabz.day26.workshop3;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Comparator;
+import java.util.Optional;
 
 public class HotelReservation implements HotelReservationInterface {
-    String hotelName;
-    int rating;
-    double regularCustomerRate;
-    Scanner scanner = new Scanner(System.in);
     ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
     Hotel hotel;
 
-    public void addHotel() {
-        System.out.println("How many hotels you want to add");
-        int numOfHotels = scanner.nextInt();
-        while (numOfHotels > 0) {
-            System.out.println("Enter hotel name:");
-            hotelName = scanner.next();
-            System.out.println("Enter hotel rating:");
-            rating = scanner.nextInt();
-            System.out.println("Enter regular customer rate:");
-            regularCustomerRate = scanner.nextDouble();
-            hotel = new Hotel(hotelName, rating, regularCustomerRate);
-            hotelList.add(hotel);
-        }
+    public void addHotel(String hotelName, int rating, double weekdayRate, double weekendRate) {
+        hotel = new Hotel();
+        hotel.setHotelName(hotelName);
+        hotel.setRating(rating);
+        hotel.setWeekDayRate(weekdayRate);
+        hotel.setWeekendRate(weekendRate);
+        hotelList.add(hotel);
     }
 
+
     @Override
+    public void addHotel() {
+        System.out.println();
+    }
 
     public int getHotelListSize() {
         return hotelList.size();
@@ -34,5 +30,15 @@ public class HotelReservation implements HotelReservationInterface {
 
     public void printHotelList() {
         System.out.println(hotelList);
+    }
+
+    public ArrayList<Hotel> getHotelList() {
+        return hotelList;
+    }
+
+    public Hotel getCheapestHotel(LocalDate startDate, LocalDate endDate) {
+
+        Optional<Hotel> resultList = hotelList.stream().min(Comparator.comparing(Hotel::getRegularCustomerCost));
+        return resultList.get();
     }
 }
