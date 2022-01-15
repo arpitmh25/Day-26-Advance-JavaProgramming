@@ -5,7 +5,12 @@ import com.bridgelabz.day26.workshop3.HotelReservationInterface;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.Month;
+
 public class HotelReservationTest {
+
+    private String customerType;
 
     @Test
     public void givenHotelList_WhenAdded_shouldReturnProperHotelName(Assertions Assert) {
@@ -47,5 +52,17 @@ public class HotelReservationTest {
         hotelReservation.addHotel("Ridgewood", 5, 220, 150);
         int hotelListSize = hotelReservation.getHotelListSize();
         Assert.assertEquals(3, hotelListSize);
+    }
+
+    @Test
+    public void givenHotelDetails_shouldReturnCheapestHotel(Assertions Assert) {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        hotelReservation.addHotel("Lakewood", 3, 110, 90);
+        hotelReservation.addHotel("Bridgewood", 4, 160, 50);
+        LocalDate startDate = LocalDate.of(2021, Month.SEPTEMBER, 10);
+        LocalDate endDate = LocalDate.of(2021, Month.SEPTEMBER, 12);
+        String hotelName = String.valueOf(hotelReservation.getCheapestHotel(startDate, endDate));
+        Assert.assertEquals("Lakewood", hotelName);
     }
 }
