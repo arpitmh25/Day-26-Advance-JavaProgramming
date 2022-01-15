@@ -19,4 +19,6 @@ public interface HotelReservationInterface {
     public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate);
 
     public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate);
+
+    public ArrayList<Integer> getDurationOfStayDetails(LocalDate startDate, LocalDate endDate);
 }
