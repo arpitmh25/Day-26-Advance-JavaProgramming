@@ -72,6 +72,22 @@ public class HotelReservationTest {
     }
 
     @Test
+    public void givenHotelList_WhenAdded_shouldReturnWeekDayRewardRate(Assertions Assert) {
+        HotelReservationInterface hotelReservation = new HotelReservation();
+        hotelReservation.addHotel("Bridgewood", 4, 150, 50, 110, 50);
+        int weekdayRewardRate = (int) hotelReservation.getHotelList().get(0).getWeekdayRewardCustomerRate();
+        Assert.assertEquals(110, weekdayRewardRate);
+    }
+
+    @Test
+    public void givenHotelList_WhenAdded_shouldReturnWeekendRewardRate(Assertions Assert) {
+        HotelReservationInterface hotelReservation = new HotelReservation();
+        hotelReservation.addHotel("Bridgewood", 4, 220, 150, 110, 50);
+        int weekendRewardRate = (int) hotelReservation.getHotelList().get(0).getWeekendRewardCustomerRate();
+        Assert.assertEquals(50, weekendRewardRate);
+    }
+
+    @Test
     public void givenHotelDetails_shouldReturnCheapestHotel(Assertions Assert, double cheapestPrice) {
 
         HotelReservation hotelReservation = new HotelReservation();
