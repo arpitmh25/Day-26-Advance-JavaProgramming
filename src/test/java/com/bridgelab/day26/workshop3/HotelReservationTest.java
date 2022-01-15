@@ -16,7 +16,7 @@ public class HotelReservationTest {
     public void givenHotelList_WhenAdded_shouldReturnProperHotelName(Assertions Assert) {
         HotelReservationInterface hotelReservation = new HotelReservation();
         hotelReservation.addHotel("Bridgewood", 4, 110, 90);
-        String hotelName = hotelReservation.getHotelList().get(0).getHotelName();
+        String hotelName = String.valueOf(hotelReservation.getHotelList().get(0).getHotelName());
         Assert.assertEquals("Bridgewood", hotelName);
     }
 

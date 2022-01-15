@@ -3,6 +3,7 @@ package com.bridgelabz.day26.workshop3;
 public class HotelReservationException extends RuntimeException {
 
     public enum ExceptionType {
+
     }
 
     ExceptionType type;

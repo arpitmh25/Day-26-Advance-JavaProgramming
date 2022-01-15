@@ -1,5 +1,7 @@
 package com.bridgelabz.day26.workshop3;
 
+import java.util.ArrayList;
+
 public class Hotel {
     private String hotelName;
     private int rating;
@@ -16,9 +18,10 @@ public class Hotel {
         this.weekendRewardCustomerRate = weekendRewardCustomerRate;
     }
 
-    public String getHotelName() {
-        return hotelName;
+    public ArrayList<Hotel> getHotelName() {
+        return null;
     }
+
 
     public void setHotelName(String hotelName) {
         this.hotelName = hotelName;
@@ -78,4 +81,6 @@ public class Hotel {
                 + ", weekendRate=" + weekendRate + ", weekdayRewardCustomerRate=" + weekdayRewardCustomerRate
                 + ", weekendRewardCustomerRate=" + weekendRewardCustomerRate + "]";
     }
+
+
 }

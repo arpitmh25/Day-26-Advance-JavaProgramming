@@ -1,12 +1,12 @@
 package com.bridgelabz.day26.workshop3;
 
-import com.sun.xml.internal.ws.api.model.ExceptionType;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HotelReservation implements HotelReservationInterface {
@@ -40,7 +40,7 @@ public class HotelReservation implements HotelReservationInterface {
         return hotelList;
     }
 
-    public String getCheapestHotel(LocalDate startDate, LocalDate endDate) {
+    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate) {
 
         int numberOfDays = (int) ChronoUnit.DAYS.between(startDate, endDate);
         int weekends = 0;
@@ -77,4 +77,16 @@ public class HotelReservation implements HotelReservationInterface {
         return null;
     }
 
+    @Override
+    public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate) {
+        return null;
+    }
+
+    public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate, String cheapestPrice) {
+
+        ArrayList<Hotel> cheapestHotels = getCheapestHotel(startDate, endDate);
+        Optional<Hotel> sortedHotelList = cheapestHotels.stream().max(Comparator.comparing(Hotel::getRating));
+        System.out.println("Cheapest Best Rated Hotel : \n" + sortedHotelList.get().getHotelName() + ", Total Rates: " + cheapestPrice);
+        return sortedHotelList.get();
+    }
 }
