@@ -48,8 +48,17 @@ public class HotelReservation implements HotelReservationInterface {
         return null;
     }
 
+    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate, double cheapestPrice, double price) {
+        return null;
+    }
+
     @Override
     public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate) {
+        return null;
+    }
+
+    @Override
+    public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate) {
         return null;
     }
 
@@ -79,21 +88,37 @@ public class HotelReservation implements HotelReservationInterface {
 
     }
 
-    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate, double cheapestPrice) {
+    public ArrayList<Hotel> getCheapestHotel(String customerType, LocalDate startDate, LocalDate endDate, double cheapestPrice) {
 
         ArrayList<Integer> durationDetails = getDurationOfStayDetails(startDate, endDate);
         int weekdaysNumber = durationDetails.get(0);
         int weekendsNumber = durationDetails.get(1);
+        ArrayList<Hotel> cheapestHotel = new ArrayList<Hotel>();
 
-        cheapestPrice = hotelList.stream()
-                .mapToDouble(hotel -> ((hotel.getWeekendRate() * weekendsNumber) + hotel.getWeekDayRate() * weekdaysNumber))
-                .min()
-                .orElse(Double.MAX_VALUE);
+        if (customerType.equalsIgnoreCase("Regular")) {
 
-        double finalCheapestPrice = cheapestPrice;
-        ArrayList<Hotel> cheapestHotel = hotelList.stream()
-                .filter(hotel -> (hotel.getWeekendRate() * weekendsNumber + hotel.getWeekDayRate() * weekdaysNumber) == finalCheapestPrice)
-                .collect(Collectors.toCollection(ArrayList::new));
+            cheapestPrice = hotelList.stream()
+                    .mapToDouble(hotel -> ((hotel.getWeekendRate() * weekendsNumber)
+                            + hotel.getWeekDayRate() * weekdaysNumber))
+                    .min().orElse(Double.MAX_VALUE);
+
+            double finalCheapestPrice1 = cheapestPrice;
+            cheapestHotel = hotelList.stream()
+                    .filter(hotel -> (hotel.getWeekendRate() * weekendsNumber
+                            + hotel.getWeekDayRate() * weekdaysNumber) == finalCheapestPrice1)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else if (customerType.equalsIgnoreCase("Reward")) {
+            cheapestPrice = hotelList.stream()
+                    .mapToDouble(hotel -> ((hotel.getWeekendRewardCustomerRate() * weekendsNumber)
+                            + hotel.getWeekdayRewardCustomerRate() * weekdaysNumber))
+                    .min().orElse(Double.MAX_VALUE);
+
+            double finalCheapestPrice = cheapestPrice;
+            cheapestHotel = hotelList.stream()
+                    .filter(hotel -> (hotel.getWeekendRewardCustomerRate() * weekendsNumber
+                            + hotel.getWeekdayRewardCustomerRate() * weekdaysNumber) == finalCheapestPrice)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
 
         if (cheapestPrice != Double.MAX_VALUE) {
             Iterator<Hotel> iterator = cheapestHotel.iterator();
@@ -104,24 +129,63 @@ public class HotelReservation implements HotelReservationInterface {
             return cheapestHotel;
         }
         return null;
+
+
     }
 
-    public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate, double cheapestPrice) {
+    public Hotel getCheapestBestRatedHotel(String customerType, LocalDate startDate, LocalDate endDate, Object ExceptionType, double cheapestPrice, HotelReservationException.ExceptionType ENTERED_NULL, HotelReservationException.ExceptionType ENTERED_EMPTY) {
 
-        ArrayList<Hotel> cheapestHotels = getCheapestHotel(startDate, endDate, cheapestPrice);
-        Optional<Hotel> sortedHotelList = cheapestHotels.stream().max(Comparator.comparing(Hotel::getRating));
-        System.out.println("Cheapest Best Rated Hotel : \n" + sortedHotelList.get().getHotelName() + ", Total Rates: " + cheapestPrice);
-        return sortedHotelList.get();
+        try {
+
+            if (customerType.length() == 0)
+                throw new HotelReservationException(ENTERED_EMPTY, "EMPTY Value Entered");
+
+            ArrayList<Hotel> cheapestHotels = getCheapestHotel(customerType, startDate, endDate, cheapestPrice);
+            Optional<Hotel> sortedHotelList = cheapestHotels.stream()
+                    .max(Comparator.comparing(Hotel::getRating));
+
+            System.out.println("Cheapest Best Rated Hotel : \n" + sortedHotelList.get().getHotelName() + ", Total Rates: "
+                    + cheapestPrice);
+            return sortedHotelList.get();
+        } catch (NullPointerException e) {
+            throw new HotelReservationException(ENTERED_NULL, "NULL Value Entered");
+        }
     }
 
-    public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate) {
+    public Hotel getBestRatedHotel(String customerType, LocalDate startDate, LocalDate endDate, HotelReservationException.ExceptionType ENTERED_EMPTY) {
 
-        ArrayList<Integer> durationDetails = getDurationOfStayDetails(startDate, endDate);
-        int weekdaysNumber = durationDetails.get(0);
-        int weekendsNumber = durationDetails.get(1);
-        Optional<Hotel> sortedHotelList = hotelList.stream().max(Comparator.comparing(Hotel::getRating));
-        double totalPrice = weekdaysNumber * sortedHotelList.get().getWeekDayRate() + weekendsNumber * sortedHotelList.get().getWeekendRate();
-        System.out.println("Best Rated Hotel : \n" + sortedHotelList.get().getHotelName() + ", Total Rates: " + totalPrice);
-        return sortedHotelList.get();
+        try {
+
+            if (customerType.length() == 0)
+                throw new HotelReservationException(ENTERED_EMPTY, "EMPTY Value Entered");
+
+            ArrayList<Integer> durationDetails = getDurationOfStayDetails(startDate, endDate);
+            int weekdaysNumber = durationDetails.get(0);
+            int weekendsNumber = durationDetails.get(1);
+            double totalPrice = 0;
+
+            Optional<Hotel> sortedHotelList = hotelList.stream()
+                    .max(Comparator.comparing(Hotel::getRating));
+
+            if (customerType.equalsIgnoreCase("Regular")) {
+
+                totalPrice = weekdaysNumber * sortedHotelList.get().getWeekdayRewardCustomerRate()
+                        + weekendsNumber * sortedHotelList.get().getWeekendRewardCustomerRate();
+            } else if (customerType.equalsIgnoreCase("Reward")) {
+
+                totalPrice = weekdaysNumber * sortedHotelList.get().getWeekdayRewardCustomerRate()
+                        + weekendsNumber * sortedHotelList.get().getWeekendRewardCustomerRate();
+            }
+
+
+            System.out.println("Best Rated Hotel : \n" + sortedHotelList.get().getHotelName() + ", Rating : "
+                    + sortedHotelList.get().getRating() + ", Total Rates: " + totalPrice);
+            return sortedHotelList.get();
+        } catch (NullPointerException e) {
+            throw new HotelReservationException(HotelReservationException.ExceptionType.ENTERED_NULL, "NULL Value Entered");
+        }
+    }
+
+    private class ENTERED_EMPTY {
     }
 }

@@ -60,7 +60,7 @@ public class HotelReservationTest {
         hotelReservation.addHotel("Bridgewood", 4, 160, 50);
         LocalDate startDate = LocalDate.of(2021, Month.SEPTEMBER, 10);
         LocalDate endDate = LocalDate.of(2021, Month.SEPTEMBER, 12);
-        String hotelName = String.valueOf(hotelReservation.getCheapestHotel(startDate, endDate, cheapestPrice));
+        String hotelName = String.valueOf(hotelReservation.getCheapestHotel(startDate, endDate, cheapestPrice, cheapestPrice));
         Assert.assertEquals("Lakewood", hotelName);
     }
 
